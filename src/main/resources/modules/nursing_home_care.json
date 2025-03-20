@@ -1,0 +1,944 @@
+{
+    "name": "Nursing Home Care",
+    "remarks": [
+      "This module represents patients in nursing home settings and their ongoing care."
+    ],
+    "states": {
+      "Initial": {
+        "type": "Initial",
+        "direct_transition": "Delay_For_Nursing_Home_Eligibility"
+      },
+      "Delay_For_Nursing_Home_Eligibility": {
+        "type": "Delay",
+        "range": {
+          "low": 70,
+          "high": 85,
+          "unit": "years"
+        },
+        "direct_transition": "Nursing_Home_Eligibility"
+      },
+      "Nursing_Home_Eligibility": {
+        "type": "Simple",
+        "distributed_transition": [
+          {
+            "distribution": 0.6,
+            "transition": "Admit_To_Nursing_Home"
+          },
+          {
+            "distribution": 0.4,
+            "transition": "Terminal"
+          }
+        ]
+      },
+      "Admit_To_Nursing_Home": {
+        "type": "SetAttribute",
+        "attribute": "care_setting",
+        "value": "nursing_home",
+        "direct_transition": "Assign_Nursing_Facility"
+      },
+      
+      "Assign_Nursing_Facility": {
+        "type": "SetAttribute",
+        "attribute": "nursing_facility",
+        "direct_transition": "Assign_Facility_Address",
+        "distributed_transition": [
+          {
+            "distribution": 0.2,
+            "value": "Oakwood Care Center"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Riverside Nursing & Rehabilitation"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Pinecrest Skilled Nursing Facility"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Maple Grove Care Home"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Serenity Hills Health Center"
+          }
+        ]
+      },
+      
+      "Assign_Facility_Address": {
+        "type": "SetAttribute",
+        "attribute": "facility_address",
+        "conditional_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Oakwood Care Center"
+            },
+            "transition": "Assign_Oakwood_Address"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Riverside Nursing & Rehabilitation"
+            },
+            "transition": "Assign_Riverside_Address"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Pinecrest Skilled Nursing Facility"
+            },
+            "transition": "Assign_Pinecrest_Address"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Maple Grove Care Home"
+            },
+            "transition": "Assign_Maple_Grove_Address"
+          },
+          {
+            "transition": "Assign_Serenity_Address"
+          }
+        ]
+      },
+      
+      "Assign_Oakwood_Address": {
+        "type": "SetAttribute",
+        "attribute": "facility_address",
+        "value": "123 Elder Street, Boston, MA 02108",
+        "direct_transition": "Assign_Facility_Phone"
+      },
+      
+      "Assign_Riverside_Address": {
+        "type": "SetAttribute",
+        "attribute": "facility_address",
+        "value": "456 Health Avenue, Cambridge, MA 02142",
+        "direct_transition": "Assign_Facility_Phone"
+      },
+      
+      "Assign_Pinecrest_Address": {
+        "type": "SetAttribute",
+        "attribute": "facility_address",
+        "value": "789 Care Boulevard, Somerville, MA 02145",
+        "direct_transition": "Assign_Facility_Phone"
+      },
+      
+      "Assign_Maple_Grove_Address": {
+        "type": "SetAttribute",
+        "attribute": "facility_address",
+        "value": "101 Senior Parkway, Brookline, MA 02446",
+        "direct_transition": "Assign_Facility_Phone"
+      },
+      
+      "Assign_Serenity_Address": {
+        "type": "SetAttribute",
+        "attribute": "facility_address",
+        "value": "202 Wellness Drive, Newton, MA 02459",
+        "direct_transition": "Assign_Facility_Phone"
+      },
+      
+      "Assign_Facility_Phone": {
+        "type": "SetAttribute",
+        "attribute": "facility_phone",
+        "conditional_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Oakwood Care Center"
+            },
+            "transition": "Assign_Oakwood_Phone"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Riverside Nursing & Rehabilitation"
+            },
+            "transition": "Assign_Riverside_Phone"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Pinecrest Skilled Nursing Facility"
+            },
+            "transition": "Assign_Pinecrest_Phone"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Maple Grove Care Home"
+            },
+            "transition": "Assign_Maple_Grove_Phone"
+          },
+          {
+            "transition": "Assign_Serenity_Phone"
+          }
+        ]
+      },
+      
+      "Assign_Oakwood_Phone": {
+        "type": "SetAttribute",
+        "attribute": "facility_phone",
+        "value": "617-555-0111",
+        "direct_transition": "Assign_Facility_Specialty"
+      },
+      
+      "Assign_Riverside_Phone": {
+        "type": "SetAttribute",
+        "attribute": "facility_phone",
+        "value": "617-555-0222",
+        "direct_transition": "Assign_Facility_Specialty"
+      },
+      
+      "Assign_Pinecrest_Phone": {
+        "type": "SetAttribute",
+        "attribute": "facility_phone",
+        "value": "617-555-0333",
+        "direct_transition": "Assign_Facility_Specialty"
+      },
+      
+      "Assign_Maple_Grove_Phone": {
+        "type": "SetAttribute",
+        "attribute": "facility_phone",
+        "value": "617-555-0444",
+        "direct_transition": "Assign_Facility_Specialty"
+      },
+      
+      "Assign_Serenity_Phone": {
+        "type": "SetAttribute",
+        "attribute": "facility_phone",
+        "value": "617-555-0555",
+        "direct_transition": "Assign_Facility_Specialty"
+      },
+      
+      "Assign_Facility_Specialty": {
+        "type": "SetAttribute",
+        "attribute": "facility_specialty",
+        "conditional_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Oakwood Care Center"
+            },
+            "transition": "Assign_Oakwood_Specialty"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Riverside Nursing & Rehabilitation"
+            },
+            "transition": "Assign_Riverside_Specialty"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Pinecrest Skilled Nursing Facility"
+            },
+            "transition": "Assign_Pinecrest_Specialty"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "nursing_facility",
+              "operator": "==",
+              "value": "Maple Grove Care Home"
+            },
+            "transition": "Assign_Maple_Grove_Specialty"
+          },
+          {
+            "transition": "Assign_Serenity_Specialty"
+          }
+        ]
+      },
+      
+      "Assign_Oakwood_Specialty": {
+        "type": "SetAttribute",
+        "attribute": "facility_specialty",
+        "value": "Dementia Care",
+        "direct_transition": "Nursing_Home_Admission"
+      },
+      
+      "Assign_Riverside_Specialty": {
+        "type": "SetAttribute",
+        "attribute": "facility_specialty",
+        "value": "Post-Acute Rehabilitation",
+        "direct_transition": "Nursing_Home_Admission"
+      },
+      
+      "Assign_Pinecrest_Specialty": {
+        "type": "SetAttribute",
+        "attribute": "facility_specialty",
+        "value": "Long-term Complex Care",
+        "direct_transition": "Nursing_Home_Admission"
+      },
+      
+      "Assign_Maple_Grove_Specialty": {
+        "type": "SetAttribute",
+        "attribute": "facility_specialty",
+        "value": "Palliative Care",
+        "direct_transition": "Nursing_Home_Admission"
+      },
+      
+      "Assign_Serenity_Specialty": {
+        "type": "SetAttribute",
+        "attribute": "facility_specialty",
+        "value": "Geriatric Rehabilitation",
+        "direct_transition": "Nursing_Home_Admission"
+      },
+      
+      "Nursing_Home_Admission": {
+        "type": "Encounter",
+        "encounter_class": "nursing_facility",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "183921000000107",
+            "display": "Admission to nursing home"
+          }
+        ],
+        "direct_transition": "Nursing_Home_Initial_Assessment"
+      }
+  },
+      
+      "Nursing_Home_Initial_Assessment": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "56876005",
+            "display": "Nursing facility comprehensive assessment"
+          }
+        ],
+        "direct_transition": "Nursing_Home_Care_Plan"
+      },
+      
+      "Nursing_Home_Care_Plan": {
+        "type": "CarePlanStart",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "304549008",
+            "display": "Nursing care plan"
+          }
+        ],
+        "activities": [
+          {
+            "system": "SNOMED-CT",
+            "code": "385949008",
+            "display": "Dressing management"
+          },
+          {
+            "system": "SNOMED-CT",
+            "code": "386464006",
+            "display": "Personal hygiene assistance"
+          },
+          {
+            "system": "SNOMED-CT",
+            "code": "416118004",
+            "display": "Administration of medication"
+          },
+          {
+            "system": "SNOMED-CT",
+            "code": "304538006",
+            "display": "Continence management"
+          },
+          {
+            "system": "SNOMED-CT",
+            "code": "182813001",
+            "display": "Nutritional status monitoring"
+          }
+        ],
+        "assign_to_attribute": "nursing_home_care_plan",
+        "direct_transition": "End_Admission_Encounter"
+      },
+      
+      "End_Admission_Encounter": {
+        "type": "EncounterEnd",
+        "direct_transition": "Begin_Daily_Care_Cycle"
+      },
+      
+      "Begin_Daily_Care_Cycle": {
+        "type": "Simple",
+        "direct_transition": "Morning_Care_Round"
+      },
+      
+      "Morning_Care_Round": {
+        "type": "Encounter",
+        "encounter_class": "nursing_facility",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "170581000000101",
+            "display": "Nursing facility visit"
+          }
+        ],
+        "direct_transition": "Assign_Morning_Care_Provider"
+      },
+      
+      "Assign_Morning_Care_Provider": {
+        "type": "SetAttribute",
+        "attribute": "care_provider_type",
+        "direct_transition": "Assign_Morning_Provider_Details",
+        "distributed_transition": [
+          {
+            "distribution": 0.8,
+            "value": "nurse"
+          },
+          {
+            "distribution": 0.1,
+            "value": "nursing_assistant"
+          },
+          {
+            "distribution": 0.1,
+            "value": "therapist"
+          }
+        ]
+      },
+      
+      "Assign_Morning_Provider_Details": {
+        "type": "ComplexAttribute",
+        "attribute": "provider",
+        "direct_transition": "Morning_Care_Activities",
+        "conditional_attribute_value": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "care_provider_type",
+              "operator": "==",
+              "value": "nurse"
+            },
+            "distributions": [
+              {
+                "attribute": "name",
+                "distribution": {
+                  "kind": "direct",
+                  "weights": [0.2, 0.2, 0.2, 0.2, 0.2],
+                  "values": ["Rebecca Miller, RN", "John Patel, RN", "Grace Williams, LPN", "Kevin Jones, RN", "Sophia Garcia, LPN"]
+                }
+              },
+              {
+                "attribute": "title",
+                "distribution": {
+                  "kind": "direct",
+                  "weights": [0.6, 0.4],
+                  "values": ["Registered Nurse", "Licensed Practical Nurse"]
+                }
+              },
+              {
+                "attribute": "id",
+                "distribution": {
+                  "kind": "uniform",
+                  "parameters": {
+                    "low": 10000,
+                    "high": 99999
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "care_provider_type",
+              "operator": "==",
+              "value": "nursing_assistant"
+            },
+            "distributions": [
+              {
+                "attribute": "name",
+                "distribution": {
+                  "kind": "direct",
+                  "weights": [0.25, 0.25, 0.25, 0.25],
+                  "values": ["Daniel Harris, CNA", "Olivia Martin, CNA", "Anthony Rodriguez, CNA", "Emma Thomas, CNA"]
+                }
+              },
+              {
+                "attribute": "title",
+                "distribution": {
+                  "kind": "direct",
+                  "weights": [1.0],
+                  "values": ["Certified Nursing Assistant"]
+                }
+              },
+              {
+                "attribute": "id",
+                "distribution": {
+                  "kind": "uniform",
+                  "parameters": {
+                    "low": 10000,
+                    "high": 99999
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "care_provider_type",
+              "operator": "==",
+              "value": "therapist"
+            },
+            "distributions": [
+              {
+                "attribute": "name",
+                "distribution": {
+                  "kind": "direct",
+                  "weights": [0.34, 0.33, 0.33],
+                  "values": ["Christopher White, PT", "Natalie Brown, OT", "Marcus Johnson, SLP"]
+                }
+              },
+              {
+                "attribute": "title",
+                "distribution": {
+                  "kind": "direct",
+                  "weights": [0.34, 0.33, 0.33],
+                  "values": ["Physical Therapist", "Occupational Therapist", "Speech-Language Pathologist"]
+                }
+              },
+              {
+                "attribute": "id",
+                "distribution": {
+                  "kind": "uniform",
+                  "parameters": {
+                    "low": 10000,
+                    "high": 99999
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      
+      "Morning_Care_Activities": {
+        "type": "Simple",
+        "complex_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "assessment_needed",
+              "operator": "==",
+              "value": true
+            },
+            "transition": "Perform_Assessment"
+          },
+          {
+            "distributions": [
+              {
+                "distribution": 0.4,
+                "transition": "Morning_Medication_Administration"
+              },
+              {
+                "distribution": 0.3,
+                "transition": "Morning_Personal_Care"
+              },
+              {
+                "distribution": 0.3,
+                "transition": "Breakfast_Assistance"
+              }
+            ]
+          }
+        ]
+      },
+      
+      "Perform_Assessment": {
+        "type": "CallSubmodule",
+        "submodule": "comprehensive_assessment",
+        "direct_transition": "Generate_Morning_Care_Note"
+      },
+      
+      "Morning_Medication_Administration": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "416118004",
+            "display": "Administration of medication"
+          }
+        ],
+        "direct_transition": "Generate_Morning_Care_Note"
+      },
+      
+      "Morning_Personal_Care": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "386464006",
+            "display": "Personal hygiene assistance"
+          }
+        ],
+        "direct_transition": "Generate_Morning_Care_Note"
+      },
+      
+      "Breakfast_Assistance": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "225389008",
+            "display": "Assistance with feeding"
+          }
+        ],
+        "direct_transition": "Generate_Morning_Care_Note"
+      },
+      
+      "Generate_Morning_Care_Note": {
+        "type": "CallSubmodule",
+        "submodule": "clinical_notes/comprehensive_assessment_note",
+        "direct_transition": "End_Morning_Care"
+      },
+      
+      "End_Morning_Care": {
+        "type": "EncounterEnd",
+        "direct_transition": "Delay_Until_Afternoon_Care"
+      },
+      
+      "Delay_Until_Afternoon_Care": {
+        "type": "Delay",
+        "exact": {
+          "quantity": 6,
+          "unit": "hours"
+        },
+        "direct_transition": "Afternoon_Care_Round"
+      },
+      
+      "Afternoon_Care_Round": {
+        "type": "Encounter",
+        "encounter_class": "nursing_facility",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "170581000000101",
+            "display": "Nursing facility visit"
+          }
+        ],
+        "direct_transition": "Afternoon_Care_Activities"
+      },
+      
+      "Afternoon_Care_Activities": {
+        "type": "Simple",
+        "distributed_transition": [
+          {
+            "distribution": 0.4,
+            "transition": "Afternoon_Medication_Administration"
+          },
+          {
+            "distribution": 0.3,
+            "transition": "Vital_Signs_Check"
+          },
+          {
+            "distribution": 0.3,
+            "transition": "Lunch_Assistance"
+          }
+        ]
+      },
+      
+      "Afternoon_Medication_Administration": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "416118004",
+            "display": "Administration of medication"
+          }
+        ],
+        "direct_transition": "Generate_Afternoon_Care_Note"
+      },
+      
+      "Vital_Signs_Check": {
+        "type": "CallSubmodule",
+        "submodule": "vital_signs/check_vital_signs",
+        "direct_transition": "Generate_Afternoon_Care_Note"
+      },
+      
+      "Lunch_Assistance": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "225389008",
+            "display": "Assistance with feeding"
+          }
+        ],
+        "direct_transition": "Generate_Afternoon_Care_Note"
+      },
+      
+      "Generate_Afternoon_Care_Note": {
+        "type": "CallSubmodule",
+        "submodule": "clinical_notes/comprehensive_assessment_note",
+        "direct_transition": "End_Afternoon_Care"
+      },
+      
+      "End_Afternoon_Care": {
+        "type": "EncounterEnd",
+        "direct_transition": "Delay_Until_Evening_Care"
+      },
+      
+      "Delay_Until_Evening_Care": {
+        "type": "Delay",
+        "exact": {
+          "quantity": 6,
+          "unit": "hours"
+        },
+        "direct_transition": "Evening_Care_Round"
+      },
+      
+      "Evening_Care_Round": {
+        "type": "Encounter",
+        "encounter_class": "nursing_facility",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "170581000000101",
+            "display": "Nursing facility visit"
+          }
+        ],
+        "direct_transition": "Evening_Care_Activities"
+      },
+      
+      "Evening_Care_Activities": {
+        "type": "Simple",
+        "distributed_transition": [
+          {
+            "distribution": 0.4,
+            "transition": "Evening_Medication_Administration"
+          },
+          {
+            "distribution": 0.3,
+            "transition": "Evening_Personal_Care"
+          },
+          {
+            "distribution": 0.3,
+            "transition": "Dinner_Assistance"
+          }
+        ]
+      },
+      
+      "Evening_Medication_Administration": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "416118004",
+            "display": "Administration of medication"
+          }
+        ],
+        "direct_transition": "Generate_Evening_Care_Note"
+      },
+      
+      "Evening_Personal_Care": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "386464006",
+            "display": "Personal hygiene assistance"
+          }
+        ],
+        "direct_transition": "Generate_Evening_Care_Note"
+      },
+      
+      "Dinner_Assistance": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "225389008",
+            "display": "Assistance with feeding"
+          }
+        ],
+        "direct_transition": "Generate_Evening_Care_Note"
+      },
+      
+      "Generate_Evening_Care_Note": {
+        "type": "CallSubmodule",
+        "submodule": "clinical_notes/comprehensive_assessment_note",
+        "direct_transition": "End_Evening_Care"
+      },
+      
+      "End_Evening_Care": {
+        "type": "EncounterEnd",
+        "direct_transition": "Delay_Until_Next_Day"
+      },
+      
+      "Delay_Until_Next_Day": {
+        "type": "Delay",
+        "exact": {
+          "quantity": 12,
+          "unit": "hours"
+        },
+        "distributed_transition": [
+          {
+            "distribution": 0.96,
+            "transition": "Begin_Daily_Care_Cycle"
+          },
+          {
+            "distribution": 0.03,
+            "transition": "Physician_Visit"
+          },
+          {
+            "distribution": 0.01,
+            "transition": "Hospital_Transfer"
+          }
+        ]
+      },
+      
+      "Physician_Visit": {
+        "type": "Encounter",
+        "encounter_class": "nursing_facility",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "18170008",
+            "display": "Nursing home physician visit"
+          }
+        ],
+        "direct_transition": "Assign_Physician_Provider"
+      },
+      
+      "Assign_Physician_Provider": {
+        "type": "ComplexAttribute",
+        "attribute": "provider",
+        "direct_transition": "Physician_Assessment",
+        "distributions": [
+          {
+            "attribute": "name",
+            "distribution": {
+              "kind": "direct",
+              "weights": [0.2, 0.2, 0.2, 0.2, 0.2],
+              "values": ["Dr. Elizabeth Cohen", "Dr. William Lee", "Dr. Sandra Wilson", "Dr. Richard Chen", "Dr. Victoria Martinez"]
+            }
+          },
+          {
+            "attribute": "title",
+            "distribution": {
+              "kind": "direct",
+              "weights": [0.4, 0.3, 0.3],
+              "values": ["Geriatrician", "Family Medicine Physician", "Internal Medicine Physician"]
+            }
+          },
+          {
+            "attribute": "id",
+            "distribution": {
+              "kind": "uniform",
+              "parameters": {
+                "low": 10000,
+                "high": 99999
+              }
+            }
+          },
+          {
+            "attribute": "specialty",
+            "distribution": {
+              "kind": "direct",
+              "weights": [0.5, 0.25, 0.25],
+              "values": ["Geriatric Medicine", "Family Medicine", "Internal Medicine"]
+            }
+          }
+        ]
+      },
+      
+      "Physician_Assessment": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "5880005",
+            "display": "Physical examination"
+          }
+        ],
+        "direct_transition": "Generate_Physician_Note"
+      },
+      
+      "Generate_Physician_Note": {
+        "type": "DiagnosticReport",
+        "codes": [
+            {
+            "system": "LOINC",
+            "code": "34110-7",
+            "display": "Physician visit note"
+            }
+        ],
+        "direct_transition": "End_Physician_Visit"
+        },
+      
+      "End_Physician_Visit": {
+        "type": "EncounterEnd",
+        "direct_transition": "Delay_Until_Next_Day"
+      },
+      
+      "Hospital_Transfer": {
+        "type": "Encounter",
+        "encounter_class": "emergency",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "308283009",
+            "display": "Transfer from nursing home to hospital"
+          }
+        ],
+        "direct_transition": "End_Hospital_Transfer"
+      },
+      
+      "End_Hospital_Transfer": {
+        "type": "EncounterEnd",
+        "direct_transition": "Delay_For_Hospital_Stay"
+      },
+      
+      "Delay_For_Hospital_Stay": {
+        "type": "Delay",
+        "range": {
+          "low": 3,
+          "high": 10,
+          "unit": "days"
+        },
+        "direct_transition": "Return_To_Nursing_Home"
+      },
+      
+      "Return_To_Nursing_Home": {
+        "type": "Encounter",
+        "encounter_class": "nursing_facility",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "305336008",
+            "display": "Admission to nursing home from hospital"
+          }
+        ],
+        "direct_transition": "End_Return_Encounter"
+      },
+      
+      "End_Return_Encounter": {
+        "type": "EncounterEnd",
+        "direct_transition": "Begin_Daily_Care_Cycle"
+      },
+      
+      "Terminal": {
+        "type": "Terminal"
+      }
+    }
+  }

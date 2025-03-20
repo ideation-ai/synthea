@@ -1,0 +1,893 @@
+{
+    "name": "Comprehensive Care Assessment",
+    "remarks": [
+      "This module conducts comprehensive assessments across 8 domains for patients in home care and nursing homes.",
+      "It generates periodic assessments with scores for all domains of function and care needs."
+    ],
+    "states": {
+      "Initial": {
+        "type": "Initial",
+        "direct_transition": "Delay_For_Assessment_Start"
+      },
+      "Delay_For_Assessment_Start": {
+        "type": "Delay",
+        "range": {
+          "low": 65,
+          "high": 75,
+          "unit": "years"
+        },
+        "direct_transition": "Assessment_Start"
+      },
+      "Assessment_Start": {
+        "type": "Simple",
+        "distributed_transition": [
+          {
+            "distribution": 0.8,
+            "transition": "Begin_Assessment"
+          },
+          {
+            "distribution": 0.2,
+            "transition": "Terminal"
+          }
+        ]
+      },
+      "Begin_Assessment": {
+        "type": "SetAttribute",
+        "attribute": "assessment_needed",
+        "value": true,
+        "direct_transition": "Initial_Assessment"
+      },
+      "Initial_Assessment": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89406-5",
+            "display": "Comprehensive functional assessment"
+          }
+        ],
+        "direct_transition": "Domain1_ADLs"
+      },
+  
+      "Domain1_ADLs": {
+        "type": "Simple",
+        "direct_transition": "Record_Bathing_Score"
+      },
+  
+      "Record_Bathing_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45590-4",
+            "display": "Bathing self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Dressing_Score"
+      },
+      "Record_Dressing_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45588-8",
+            "display": "Dressing self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Toileting_Score"
+      },
+      "Record_Toileting_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45589-6",
+            "display": "Toileting self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Transferring_Score"
+      },
+      "Record_Transferring_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45586-2",
+            "display": "Transfer self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Feeding_Score"
+      },
+      "Record_Feeding_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45587-0",
+            "display": "Eating self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Continence_Score"
+      },
+      "Record_Continence_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45591-2",
+            "display": "Toilet hygiene self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Domain2_IADLs"
+      },
+  
+      "Domain2_IADLs": {
+        "type": "Simple",
+        "direct_transition": "Record_Medication_Management_Score"
+      },
+  
+      "Record_Medication_Management_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "52252-8",
+            "display": "Medication management - Ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Meal_Preparation_Score"
+      },
+      "Record_Meal_Preparation_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89409-9",
+            "display": "Meal preparation - functional ability"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Money_Management_Score"
+      },
+      "Record_Money_Management_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89399-2",
+            "display": "Managing finances - functional ability"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Transportation_Score"
+      },
+      "Record_Transportation_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89402-4",
+            "display": "Transportation - functional ability"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Housekeeping_Score"
+      },
+      "Record_Housekeeping_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89400-8",
+            "display": "Housekeeping - functional ability"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Communication_Score"
+      },
+      "Record_Communication_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89396-8",
+            "display": "Communication - functional ability"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Domain3_Mobility"
+      },
+  
+      "Domain3_Mobility": {
+        "type": "Simple",
+        "direct_transition": "Record_Walking_Ability"
+      },
+  
+      "Record_Walking_Ability": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89392-7",
+            "display": "Walking - functional ability"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Balance_Score"
+      },
+      "Record_Balance_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "67263-2",
+            "display": "Balance assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Fall_Risk"
+      },
+      "Record_Fall_Risk": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "38212-7",
+            "display": "Falls risk assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 10
+        },
+        "direct_transition": "Record_Range_Of_Motion"
+      },
+      "Record_Range_Of_Motion": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "67276-4",
+            "display": "Range of motion assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Strength_Score"
+      },
+      "Record_Strength_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "37667-3",
+            "display": "Muscle strength assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Domain4_Cognitive"
+      },
+  
+      "Domain4_Cognitive": {
+        "type": "Simple",
+        "direct_transition": "Record_Memory_Score"
+      },
+  
+      "Record_Memory_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "72107-6",
+            "display": "Memory assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Record_Orientation_Score"
+      },
+      "Record_Orientation_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "54614-7",
+            "display": "Orientation assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Executive_Function"
+      },
+      "Record_Executive_Function": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "71708-2",
+            "display": "Executive function assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Record_Decision_Making"
+      },
+      "Record_Decision_Making": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "54640-2",
+            "display": "Decision making assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Record_Judgment"
+      },
+      "Record_Judgment": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "54635-2",
+            "display": "Judgment assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Domain5_Mental_Health"
+      },
+  
+      "Domain5_Mental_Health": {
+        "type": "Simple",
+        "direct_transition": "Record_Depression_Score"
+      },
+  
+      "Record_Depression_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "44261-6",
+            "display": "Depression screening"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 27
+        },
+        "direct_transition": "Record_Anxiety_Score"
+      },
+      "Record_Anxiety_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "69737-5",
+            "display": "Anxiety assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 21
+        },
+        "direct_transition": "Record_Mood_Score"
+      },
+      "Record_Mood_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89214-2",
+            "display": "Mood assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Record_Behavior_Score"
+      },
+      "Record_Behavior_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "54632-9",
+            "display": "Behavior assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Record_Sleep_Score"
+      },
+      "Record_Sleep_Score": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "38228-3",
+            "display": "Sleep assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 21
+        },
+        "direct_transition": "Domain6_Nutrition"
+      },
+  
+      "Domain6_Nutrition": {
+        "type": "Simple",
+        "direct_transition": "Record_Weight_Monitoring"
+      },
+  
+      "Record_Weight_Monitoring": {
+        "type": "Observation",
+        "category": "survey",
+        "vital_sign": "Weight",
+        "unit": "kg",
+        "direct_transition": "Record_Hydration_Status"
+      },
+      "Record_Hydration_Status": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "75519-9",
+            "display": "Hydration status assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Dietary_Intake"
+      },
+      "Record_Dietary_Intake": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "81163-9",
+            "display": "Dietary intake assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Nutritional_Risk"
+      },
+      "Record_Nutritional_Risk": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "39209-2",
+            "display": "Nutritional risk assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 10
+        },
+        "direct_transition": "Record_Swallowing_Ability"
+      },
+      "Record_Swallowing_Ability": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89411-5",
+            "display": "Swallowing ability assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Domain7_Social"
+      },
+  
+      "Domain7_Social": {
+        "type": "Simple",
+        "direct_transition": "Record_Family_Involvement"
+      },
+  
+      "Record_Family_Involvement": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "63904-5",
+            "display": "Social support assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Social_Network"
+      },
+      "Record_Social_Network": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "96777-8",
+            "display": "Social network assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Record_Community_Participation"
+      },
+      "Record_Community_Participation": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "73822-9",
+            "display": "Community participation assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Isolation_Risk"
+      },
+      "Record_Isolation_Risk": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "55758-1",
+            "display": "Social isolation risk assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 10
+        },
+        "direct_transition": "Domain8_Medical"
+      },
+  
+      "Domain8_Medical": {
+        "type": "Simple",
+        "direct_transition": "Record_Pain_Assessment"
+      },
+  
+      "Record_Pain_Assessment": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "38208-5",
+            "display": "Pain assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 10
+        },
+        "direct_transition": "Record_Medication_Review"
+      },
+      "Record_Medication_Review": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "87615-2",
+            "display": "Medication review"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 4
+        },
+        "direct_transition": "Record_Skin_Integrity"
+      },
+      "Record_Skin_Integrity": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "39106-0",
+            "display": "Skin integrity assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 23
+        },
+        "direct_transition": "Record_Chronic_Disease_Management"
+      },
+      "Record_Chronic_Disease_Management": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "78621-9",
+            "display": "Disease management assessment"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 5
+        },
+        "direct_transition": "Record_Vital_Signs"
+      },
+      "Record_Vital_Signs": {
+        "type": "CallSubmodule",
+        "submodule": "vital_signs/check_vital_signs",
+        "direct_transition": "Generate_Clinical_Note"
+      },
+  
+      "Generate_Clinical_Note": {
+        "type": "CallSubmodule",
+        "submodule": "clinical_notes/comprehensive_assessment_note",
+        "direct_transition": "Assessment_Complete"
+      },
+  
+      "Assessment_Complete": {
+        "type": "Simple",
+        "direct_transition": "Assessment_Reassessment_Timer"
+      },
+  
+      "Assessment_Reassessment_Timer": {
+        "type": "Delay",
+        "range": {
+          "low": 28,
+          "high": 35,
+          "unit": "days"
+        },
+        "distributed_transition": [
+          {
+            "distribution": 0.95,
+            "transition": "Follow_Up_Assessment"
+          },
+          {
+            "distribution": 0.05,
+            "transition": "Decline_In_Condition"
+          }
+        ]
+      },
+  
+      "Follow_Up_Assessment": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89406-5",
+            "display": "Comprehensive functional assessment"
+          }
+        ],
+        "direct_transition": "Domain1_ADLs"
+      },
+  
+      "Decline_In_Condition": {
+        "type": "Simple",
+        "remarks": [
+          "This represents a deterioration in patient condition requiring an urgent reassessment"
+        ],
+        "direct_transition": "Urgent_Assessment"
+      },
+  
+      "Urgent_Assessment": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89406-5",
+            "display": "Comprehensive functional assessment"
+          }
+        ],
+        "direct_transition": "Generate_Urgent_Assessment_Note"
+      },
+  
+      "Generate_Urgent_Assessment_Note": {
+        "type": "CallSubmodule",
+        "submodule": "clinical_notes/urgent_assessment_note",
+        "direct_transition": "Urgent_Domain1_ADLs"
+      },
+  
+      "Urgent_Domain1_ADLs": {
+        "type": "Simple",
+        "direct_transition": "Record_Bathing_Score_Declined"
+      },
+  
+      "Record_Bathing_Score_Declined": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45590-4",
+            "display": "Bathing self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 2
+        },
+        "direct_transition": "Record_Dressing_Score_Declined"
+      },
+      
+      "Record_Dressing_Score_Declined": {
+        "type": "Observation",
+        "category": "survey",
+        "unit": "score",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "45588-8",
+            "display": "Dressing self-care - usual ability [FHIR]"
+          }
+        ],
+        "range": {
+          "low": 0,
+          "high": 2
+        },
+        "direct_transition": "Urgent_Assessment_Complete"
+      },
+  
+      "Urgent_Assessment_Complete": {
+        "type": "Simple",
+        "direct_transition": "Assessment_Reassessment_Timer"
+      },
+  
+      "Terminal": {
+        "type": "Terminal"
+      }
+    }
+  }

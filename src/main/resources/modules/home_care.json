@@ -1,0 +1,620 @@
+{
+    "name": "Home Care Services",
+    "remarks": [
+      "This module represents the enrollment of patients in home care services and the care they receive at home."
+    ],
+    "states": {
+      "Initial": {
+        "type": "Initial",
+        "direct_transition": "Delay_For_Home_Care_Eligibility"
+      },
+      "Delay_For_Home_Care_Eligibility": {
+        "type": "Delay",
+        "range": {
+          "low": 65,
+          "high": 80,
+          "unit": "years"
+        },
+        "direct_transition": "Home_Care_Eligibility"
+      },
+      "Home_Care_Eligibility": {
+        "type": "Simple",
+        "distributed_transition": [
+          {
+            "distribution": 0.7,
+            "transition": "Enroll_In_Home_Care"
+          },
+          {
+            "distribution": 0.3,
+            "transition": "Terminal"
+          }
+        ]
+      },
+      "Enroll_In_Home_Care": {
+        "type": "SetAttribute",
+        "attribute": "care_setting",
+        "value": "home_care",
+        "direct_transition": "Assign_Home_Address_Type"
+      },
+      
+      "Assign_Home_Address_Type": {
+        "type": "SetAttribute",
+        "attribute": "home_address_type",
+        "direct_transition": "Assign_Street_Number",
+        "distributed_transition": [
+          {
+            "distribution": 0.3,
+            "value": "apartment"
+          },
+          {
+            "distribution": 0.6,
+            "value": "house"
+          },
+          {
+            "distribution": 0.1,
+            "value": "assisted_living"
+          }
+        ]
+      },
+      
+      "Assign_Street_Number": {
+        "type": "SetAttribute",
+        "attribute": "home_street_number",
+        "range": {
+          "low": 100,
+          "high": 9999
+        },
+        "direct_transition": "Assign_Street_Name"
+      },
+      
+      "Assign_Street_Name": {
+        "type": "SetAttribute",
+        "attribute": "home_street_name",
+        "direct_transition": "Conditional_Apartment_Unit",
+        "distributed_transition": [
+          {
+            "distribution": 0.2,
+            "value": "Main Street"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Park Avenue"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Washington Street"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Elm Street"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Oak Lane"
+          }
+        ]
+      },
+      
+      "Conditional_Apartment_Unit": {
+        "type": "Simple",
+        "conditional_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "home_address_type",
+              "operator": "==",
+              "value": "apartment"
+            },
+            "transition": "Assign_Apartment_Unit"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "home_address_type",
+              "operator": "==",
+              "value": "assisted_living"
+            },
+            "transition": "Assign_Facility_Name"
+          },
+          {
+            "transition": "Home_Care_Initial_Assessment"
+          }
+        ]
+      },
+      
+      "Assign_Apartment_Unit": {
+        "type": "SetAttribute",
+        "attribute": "home_unit",
+        "range": {
+          "low": 101,
+          "high": 999
+        },
+        "direct_transition": "Home_Care_Initial_Assessment"
+      },
+      
+      "Assign_Facility_Name": {
+        "type": "SetAttribute",
+        "attribute": "facility_name",
+        "direct_transition": "Assign_Facility_Unit",
+        "distributed_transition": [
+          {
+            "distribution": 0.25,
+            "value": "Sunshine Senior Living"
+          },
+          {
+            "distribution": 0.25,
+            "value": "Golden Years Assisted Living"
+          },
+          {
+            "distribution": 0.25,
+            "value": "Evergreen Estates"
+          },
+          {
+            "distribution": 0.25,
+            "value": "Brookside Gardens"
+          }
+        ]
+      },
+      
+      "Assign_Facility_Unit": {
+        "type": "SetAttribute",
+        "attribute": "home_unit",
+        "range": {
+          "low": 101,
+          "high": 599
+        },
+        "direct_transition": "Home_Care_Initial_Assessment"
+      },
+      
+      "Home_Care_Initial_Assessment": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "866271000000108",
+            "display": "Assessment for home care"
+          }
+        ],
+        "direct_transition": "Home_Care_Care_Plan"
+      },
+      
+      "Home_Care_Care_Plan": {
+        "type": "CarePlanStart",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "734163000",
+            "display": "Home care service"
+          }
+        ],
+        "activities": [
+          {
+            "system": "SNOMED-CT",
+            "code": "408580007",
+            "display": "Physical health and wellbeing assessment"
+          },
+          {
+            "system": "SNOMED-CT",
+            "code": "410276006",
+            "display": "Household maintenance assistance"
+          },
+          {
+            "system": "SNOMED-CT",
+            "code": "415711008",
+            "display": "Medication monitoring service"
+          },
+          {
+            "system": "SNOMED-CT",
+            "code": "386464006",
+            "display": "Personal hygiene assistance"
+          }
+        ],
+        "assign_to_attribute": "home_care_plan",
+        "direct_transition": "Schedule_Home_Care_Visits"
+      },
+      
+      "Schedule_Home_Care_Visits": {
+        "type": "Simple",
+        "direct_transition": "Home_Care_Visit"
+      },
+      
+      "Home_Care_Visit": {
+        "type": "Encounter",
+        "encounter_class": "home",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "439708006",
+            "display": "Home visit"
+          }
+        ],
+        "direct_transition": "Assign_Care_Provider_Type"
+      },
+      
+      "Assign_Care_Provider_Type": {
+        "type": "SetAttribute",
+        "attribute": "care_provider_type",
+        "direct_transition": "Assign_Provider_Name",
+        "distributed_transition": [
+          {
+            "distribution": 0.7,
+            "value": "nurse"
+          },
+          {
+            "distribution": 0.2,
+            "value": "physician"
+          },
+          {
+            "distribution": 0.1,
+            "value": "therapist"
+          }
+        ]
+      },
+      
+      "Assign_Provider_Name": {
+        "type": "SetAttribute",
+        "attribute": "provider_name",
+        "conditional_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "care_provider_type",
+              "operator": "==",
+              "value": "nurse"
+            },
+            "transition": "Assign_Nurse_Name"
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "care_provider_type",
+              "operator": "==",
+              "value": "physician"
+            },
+            "transition": "Assign_Physician_Name"
+          },
+          {
+            "transition": "Assign_Therapist_Name"
+          }
+        ]
+      },
+      
+      "Assign_Nurse_Name": {
+        "type": "SetAttribute",
+        "attribute": "provider_name",
+        "direct_transition": "Assign_Provider_Title",
+        "distributed_transition": [
+          {
+            "distribution": 0.2,
+            "value": "Sarah Johnson, RN"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Michael Chen, RN"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Jessica Martinez, LPN"
+          },
+          {
+            "distribution": 0.2,
+            "value": "David Wilson, RN"
+          },
+          {
+            "distribution": 0.2,
+            "value": "Emily Brown, LPN"
+          }
+        ]
+      },
+      
+      "Assign_Physician_Name": {
+        "type": "SetAttribute",
+        "attribute": "provider_name",
+        "direct_transition": "Assign_Provider_Title",
+        "distributed_transition": [
+          {
+            "distribution": 0.25,
+            "value": "Dr. Robert Taylor"
+          },
+          {
+            "distribution": 0.25,
+            "value": "Dr. Maria Rodriguez"
+          },
+          {
+            "distribution": 0.25,
+            "value": "Dr. James Kim"
+          },
+          {
+            "distribution": 0.25,
+            "value": "Dr. Lisa Thompson"
+          }
+        ]
+      },
+      
+      "Assign_Therapist_Name": {
+        "type": "SetAttribute",
+        "attribute": "provider_name",
+        "direct_transition": "Assign_Provider_Title",
+        "distributed_transition": [
+          {
+            "distribution": 0.34,
+            "value": "Jennifer Adams, PT"
+          },
+          {
+            "distribution": 0.33,
+            "value": "Thomas Wright, OT"
+          },
+          {
+            "distribution": 0.33,
+            "value": "Amanda Lee, SLP"
+          }
+        ]
+      },
+      
+      "Assign_Provider_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "conditional_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "care_provider_type",
+              "operator": "==",
+              "value": "nurse"
+            },
+            "distributions": [
+              {
+                "distribution": 0.6,
+                "transition": "Assign_RN_Title"
+              },
+              {
+                "distribution": 0.4,
+                "transition": "Assign_LPN_Title"
+              }
+            ]
+          },
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "care_provider_type",
+              "operator": "==",
+              "value": "physician"
+            },
+            "distributions": [
+              {
+                "distribution": 0.6,
+                "transition": "Assign_Geriatrician_Title"
+              },
+              {
+                "distribution": 0.4,
+                "transition": "Assign_Family_Medicine_Title"
+              }
+            ]
+          },
+          {
+            "distributions": [
+              {
+                "distribution": 0.34,
+                "transition": "Assign_PT_Title"
+              },
+              {
+                "distribution": 0.33,
+                "transition": "Assign_OT_Title"
+              },
+              {
+                "distribution": 0.33,
+                "transition": "Assign_SLP_Title"
+              }
+            ]
+          }
+        ]
+      },
+      
+      "Assign_RN_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "value": "Registered Nurse",
+        "direct_transition": "Care_Activities"
+      },
+      
+      "Assign_LPN_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "value": "Licensed Practical Nurse",
+        "direct_transition": "Care_Activities"
+      },
+      
+      "Assign_Geriatrician_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "value": "Geriatrician",
+        "direct_transition": "Care_Activities"
+      },
+      
+      "Assign_Family_Medicine_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "value": "Family Medicine Physician",
+        "direct_transition": "Care_Activities"
+      },
+      
+      "Assign_PT_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "value": "Physical Therapist",
+        "direct_transition": "Care_Activities"
+      },
+      
+      "Assign_OT_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "value": "Occupational Therapist",
+        "direct_transition": "Care_Activities"
+      },
+      
+      "Assign_SLP_Title": {
+        "type": "SetAttribute",
+        "attribute": "provider_title",
+        "value": "Speech-Language Pathologist",
+        "direct_transition": "Care_Activities"
+      },
+      
+      "Care_Activities": {
+        "type": "Simple",
+        "complex_transition": [
+          {
+            "condition": {
+              "condition_type": "Attribute",
+              "attribute": "assessment_needed",
+              "operator": "==",
+              "value": true
+            },
+            "transition": "Perform_Assessment"
+          },
+          {
+            "distributions": [
+              {
+                "distribution": 0.3,
+                "transition": "Medication_Administration"
+              },
+              {
+                "distribution": 0.2,
+                "transition": "Vital_Signs_Check"
+              },
+              {
+                "distribution": 0.25,
+                "transition": "Personal_Care_Assistance"
+              },
+              {
+                "distribution": 0.25,
+                "transition": "Home_Safety_Check"
+              }
+            ]
+          }
+        ]
+      },
+      
+      "Perform_Assessment": {
+        "type": "CallSubmodule",
+        "submodule": "comprehensive_assessment",
+        "direct_transition": "Generate_Visit_Note"
+      },
+      
+      "Medication_Administration": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "416118004",
+            "display": "Administration of medication"
+          }
+        ],
+        "direct_transition": "Generate_Visit_Note"
+      },
+      
+      "Vital_Signs_Check": {
+        "type": "CallSubmodule",
+        "submodule": "vital_signs/check_vital_signs",
+        "direct_transition": "Generate_Visit_Note"
+      },
+      
+      "Personal_Care_Assistance": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "386464006",
+            "display": "Personal hygiene assistance"
+          }
+        ],
+        "direct_transition": "Generate_Visit_Note"
+      },
+      
+      "Home_Safety_Check": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "225358003",
+            "display": "Residential safety assessment"
+          }
+        ],
+        "direct_transition": "Generate_Visit_Note"
+      },
+      
+      "Generate_Visit_Note": {
+        "type": "DiagnosticReport",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "34117-2",
+            "display": "Home care visit note"
+          }
+        ],
+        "direct_transition": "End_Visit"
+      },
+      
+      "End_Visit": {
+        "type": "EncounterEnd",
+        "direct_transition": "Schedule_Next_Visit"
+      },
+      
+      "Schedule_Next_Visit": {
+        "type": "Delay",
+        "range": {
+          "low": 1,
+          "high": 7,
+          "unit": "days"
+        },
+        "distributed_transition": [
+          {
+            "distribution": 0.9,
+            "transition": "Home_Care_Visit"
+          },
+          {
+            "distribution": 0.08,
+            "transition": "Reassess_Care_Needs"
+          },
+          {
+            "distribution": 0.02,
+            "transition": "Transfer_To_Nursing_Home"
+          }
+        ]
+      },
+      
+      "Reassess_Care_Needs": {
+        "type": "Procedure",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "866271000000108",
+            "display": "Assessment for home care"
+          }
+        ],
+        "direct_transition": "Update_Care_Plan"
+      },
+      
+      "Update_Care_Plan": {
+        "type": "CarePlanEnd",
+        "referenced_by_attribute": "home_care_plan",
+        "direct_transition": "Home_Care_Care_Plan"
+      },
+      
+      "Transfer_To_Nursing_Home": {
+        "type": "SetAttribute",
+        "attribute": "care_setting",
+        "value": "nursing_home",
+        "direct_transition": "End_Home_Care"
+      },
+      
+      "End_Home_Care": {
+        "type": "CarePlanEnd",
+        "referenced_by_attribute": "home_care_plan",
+        "direct_transition": "Terminal"
+      },
+      
+      "Terminal": {
+        "type": "Terminal"
+      }
+    }
+  }

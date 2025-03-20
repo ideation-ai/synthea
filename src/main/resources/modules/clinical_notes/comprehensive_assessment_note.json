@@ -1,0 +1,72 @@
+{
+    "name": "Comprehensive Assessment Note",
+    "remarks": [
+      "This module generates comprehensive assessments without using NoteContent state"
+    ],
+    "states": {
+      "Initial": {
+        "type": "Initial",
+        "direct_transition": "Generate_Assessment_Report"
+      },
+      "Generate_Assessment_Report": {
+        "type": "DiagnosticReport",
+        "codes": [
+          {
+            "system": "LOINC",
+            "code": "89406-5",
+            "display": "Comprehensive functional assessment"
+          }
+        ],
+        "observations": [
+          {
+            "category": "survey",
+            "unit": "score",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "45590-4",
+                "display": "Bathing self-care"
+              }
+            ]
+          },
+          {
+            "category": "survey",
+            "unit": "score",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "45588-8",
+                "display": "Dressing self-care"
+              }
+            ]
+          },
+          {
+            "category": "survey",
+            "unit": "score",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "45589-6",
+                "display": "Toileting self-care"
+              }
+            ]
+          },
+          {
+            "category": "survey",
+            "unit": "score",
+            "codes": [
+              {
+                "system": "LOINC",
+                "code": "52252-8",
+                "display": "Medication management"
+              }
+            ]
+          }
+        ],
+        "direct_transition": "Terminal"
+      },
+      "Terminal": {
+        "type": "Terminal"
+      }
+    }
+  }
